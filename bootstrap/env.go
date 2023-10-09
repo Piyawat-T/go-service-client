@@ -7,11 +7,12 @@ import (
 )
 
 type Env struct {
-	AppEnv         string `mapstructure:"APP_ENV"`
-	ContextPath    string `mapstructure:"CONTEXT_PATH"`
-	ServerAddress  string `mapstructure:"SERVER_ADDRESS"`
-	ContextTimeout int    `mapstructure:"CONTEXT_TIMEOUT"`
-	GinMode        string `mapstructure:"GIN_MODE"`
+	AppEnv           string `mapstructure:"APP_ENV"`
+	ContextPath      string `mapstructure:"CONTEXT_PATH"`
+	ServerAddress    string `mapstructure:"SERVER_ADDRESS"`
+	ContextTimeout   int    `mapstructure:"CONTEXT_TIMEOUT"`
+	GinMode          string `mapstructure:"GIN_MODE"`
+	ServiceServerUrl string `mapstructure:"SERVICE_SERVER_URL"`
 }
 
 func NewEnv() *Env {

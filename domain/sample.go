@@ -1,11 +1,17 @@
 package domain
 
-import "github.com/gin-gonic/gin"
+import (
+	"context"
+)
 
 type Sample struct {
 	Data string `json:"data"`
 }
 
+type SampleClient interface {
+	Get(c context.Context) (Sample, error)
+}
+
 type SampleUsecase interface {
-	GetSample(c *gin.Context) (Sample, error)
+	GetSample(c context.Context) (Sample, error)
 }

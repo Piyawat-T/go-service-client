@@ -18,7 +18,7 @@ func (s *SampleController) Sample(c *gin.Context) {
 	ctx := c.Request.Context()
 	log := otelzap.L()
 	log.InfoContext(ctx, "Start Get Sample")
-	sample, err := s.SampleUsecase.GetSample(c)
+	sample, err := s.SampleUsecase.GetSample(ctx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, domain.ErrorResponse{Message: err.Error()})
 		return
