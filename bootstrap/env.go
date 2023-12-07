@@ -1,9 +1,14 @@
 package bootstrap
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
 	"log"
+	"net/http"
 
 	"github.com/spf13/viper"
+	_ "github.com/spf13/viper/remote"
 )
 
 type Env struct {
@@ -13,6 +18,15 @@ type Env struct {
 	ContextTimeout   int    `mapstructure:"CONTEXT_TIMEOUT"`
 	GinMode          string `mapstructure:"GIN_MODE"`
 	ServiceServerUrl string `mapstructure:"SERVICE_SERVER_URL"`
+	Properties       map[string]interface{}
+}
+
+type property struct {
+	Id          uint   `json:"id"`
+	Application string `json:"application"`
+	Profile     string `json:"profile"`
+	Key         string `json:"key"`
+	Value       string `json:"value"`
 }
 
 func NewEnv() *Env {
@@ -32,6 +46,38 @@ func NewEnv() *Env {
 	if env.AppEnv == "development" {
 		log.Println("The App is running in development env")
 	}
+
+	// viper.AddRemoteProvider("etcd", "http://localhost:8100", "/go-centralize-configuration/deposit/default")
+	// viper.SetConfigType("json")
+	// err := viper.ReadRemoteConfig()
+	// if err != nil {
+	// 	log.Fatal("Can't read the remove : ", err)
+	// }
+
+	resp, err := http.Get("http://localhost:8100/go-centralize-configuration/deposit/default")
+	if err != nil {
+		panic("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
+	}
+	// fmt.Println(body)
+	// viper.ReadConfig(bytes.NewBuffer(body))
+	var properties []property
+	// viper.Unmarshal(&properties)
+	json.Unmarshal(body, &properties)
+	propertyMap := map[string]any{}
+	for _, property := range properties {
+		key := property.Key
+		value := property.Value
+		propertyMap[key] = value
+		// viper.Set(key, value)
+	}
+	env.Properties = propertyMap
+
+	x := viper.Get("xx")
+	fmt.Println(x)
 
 	return &env
 }
