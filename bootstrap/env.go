@@ -2,7 +2,6 @@ package bootstrap
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -47,13 +46,6 @@ func NewEnv() *Env {
 		log.Println("The App is running in development env")
 	}
 
-	// viper.AddRemoteProvider("etcd", "http://localhost:8100", "/go-centralize-configuration/deposit/default")
-	// viper.SetConfigType("json")
-	// err := viper.ReadRemoteConfig()
-	// if err != nil {
-	// 	log.Fatal("Can't read the remove : ", err)
-	// }
-
 	resp, err := http.Get("http://localhost:8100/go-centralize-configuration/deposit/default")
 	if err != nil {
 		panic("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
@@ -62,22 +54,17 @@ func NewEnv() *Env {
 	if err != nil {
 		panic("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
 	}
-	// fmt.Println(body)
-	// viper.ReadConfig(bytes.NewBuffer(body))
+
 	var properties []property
-	// viper.Unmarshal(&properties)
 	json.Unmarshal(body, &properties)
 	propertyMap := map[string]any{}
 	for _, property := range properties {
 		key := property.Key
 		value := property.Value
 		propertyMap[key] = value
-		// viper.Set(key, value)
+		viper.Set(key, value)
 	}
 	env.Properties = propertyMap
-
-	x := viper.Get("xx")
-	fmt.Println(x)
 
 	return &env
 }
