@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -13,10 +14,12 @@ import (
 type Env struct {
 	AppEnv           string `mapstructure:"APP_ENV"`
 	ContextPath      string `mapstructure:"CONTEXT_PATH"`
+	Profile          string `mapstructure:"PROFILE"`
 	ServerAddress    string `mapstructure:"SERVER_ADDRESS"`
 	ContextTimeout   int    `mapstructure:"CONTEXT_TIMEOUT"`
 	GinMode          string `mapstructure:"GIN_MODE"`
 	ServiceServerUrl string `mapstructure:"SERVICE_SERVER_URL"`
+	CloudConfigUrl   string `mapstructure:"CLOUD_CONFIG_URL"`
 	Properties       map[string]interface{}
 }
 
@@ -46,7 +49,9 @@ func NewEnv() *Env {
 		log.Println("The App is running in development env")
 	}
 
-	resp, err := http.Get("http://localhost:8100/go-centralize-configuration/deposit/default")
+	configUrl := fmt.Sprintf("%s/%s/%s", env.CloudConfigUrl, env.ContextPath, env.Profile)
+
+	resp, err := http.Get(configUrl)
 	if err != nil {
 		panic("Couldn't load configuration, cannot start. Terminating. Error: " + err.Error())
 	}
