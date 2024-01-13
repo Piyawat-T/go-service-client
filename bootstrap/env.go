@@ -11,15 +11,18 @@ import (
 	_ "github.com/spf13/viper/remote"
 )
 
-const ServiceServerUrl = "host.go-service-server.url"
+const (
+	ServiceServerUrl = "host.go_service_server.url"
+	GinMode          = "gin_mode"
+	Profile          = "profile"
+	ServerAddress    = "server_address"
+)
 
 type Env struct {
 	AppEnv         string `mapstructure:"APP_ENV"`
-	ContextPath    string `mapstructure:"CONTEXT_PATH"`
 	Profile        string `mapstructure:"PROFILE"`
-	ServerAddress  string `mapstructure:"SERVER_ADDRESS"`
+	ContextPath    string `mapstructure:"CONTEXT_PATH"`
 	ContextTimeout int    `mapstructure:"CONTEXT_TIMEOUT"`
-	GinMode        string `mapstructure:"GIN_MODE"`
 	CloudConfigUrl string `mapstructure:"CLOUD_CONFIG_URL"`
 	Properties     map[string]interface{}
 }
