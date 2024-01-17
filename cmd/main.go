@@ -8,6 +8,7 @@ import (
 	routeV1 "github.com/Piyawat-T/go-service-client/api/route/v1"
 	"github.com/Piyawat-T/go-service-client/bootstrap"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.uber.org/zap"
@@ -32,7 +33,7 @@ func main() {
 	undo := otelzap.ReplaceGlobals(logger)
 	defer undo()
 
-	gin.SetMode(env.GinMode)
+	gin.SetMode(viper.GetString(bootstrap.GinMode))
 	r := gin.Default()
 	r.Use(otelgin.Middleware("service-name"))
 
@@ -40,5 +41,5 @@ func main() {
 	routerV1 := r.Group(contextPath)
 	routeV1.Setup(env, timeout, routerV1)
 
-	r.Run(env.ServerAddress)
+	r.Run(viper.GetString(bootstrap.ServerAddress))
 }

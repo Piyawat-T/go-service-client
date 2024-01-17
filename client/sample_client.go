@@ -7,6 +7,7 @@ import (
 	"github.com/Piyawat-T/go-service-client/bootstrap"
 	"github.com/Piyawat-T/go-service-client/domain"
 	"github.com/Piyawat-T/go-service-client/pkg"
+	"github.com/spf13/viper"
 	"github.com/uptrace/opentelemetry-go-extra/otelzap"
 )
 
@@ -28,7 +29,7 @@ func (sc *sampleClient) Get(ctx context.Context) (domain.Sample, error) {
 	log := otelzap.L()
 	log.InfoContext(ctx, "Start Get Sample")
 
-	url := sc.Env.ServiceServerUrl + samplePathV1
+	url := viper.GetString(bootstrap.ServiceServerUrl) + samplePathV1
 	sample, err := pkg.Get[domain.Sample](ctx, url)
 	return sample, err
 }
